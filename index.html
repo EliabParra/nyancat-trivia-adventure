@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Challenge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="game-card">
+            <!-- PANTALLA DE CONFIGURACIÓN -->
+            <div id="config-screen" class="screen active">
+                <h1>🧠 Trivia Challenge</h1>
+                
+                <form id="config-form">
+                    <div class="form-group">
+                        <label for="player-name">Nombre del Jugador</label>
+                        <input type="text" id="player-name" placeholder="Ingresa tu nombre" minlength="2" maxlength="20" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question-count">Cantidad de Preguntas</label>
+                        <input type="number" id="question-count" min="5" max="20" value="10" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nivel de Dificultad</label>
+                        <div class="difficulty-buttons">
+                            <button type="button" class="difficulty-btn" data-difficulty="easy">🟢 Fácil</button>
+                            <button type="button" class="difficulty-btn selected" data-difficulty="medium">🟡 Medio</button>
+                            <button type="button" class="difficulty-btn" data-difficulty="hard">🔴 Difícil</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Categoría</label>
+                        <select id="category" required>
+                            <option value="">Mixtas (Todas las categorías)</option>
+                            <option value="9">Conocimiento General</option>
+                            <option value="17">Ciencia y Naturaleza</option>
+                            <option value="21">Deportes</option>
+                            <option value="22">Geografía</option>
+                            <option value="23">Historia</option>
+                            <option value="11">Películas</option>
+                            <option value="12">Música</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="start-game-btn">
+                        🚀 Comenzar Juego
+                    </button>
+                </form>
+            </div>
+
+            <!-- PANTALLA DE CARGA -->
+            <div id="loading-screen" class="screen">
+                <div class="loader"></div>
+                <div class="loading-text">Cargando preguntas...</div>
+            </div>
+
+            <!-- PANTALLA DE JUEGO -->
+            <div id="game-screen" class="screen">
+                <div class="game-header">
+                    <div class="question-counter" id="question-counter">
+                        Pregunta 1 de 10
+                    </div>
+                    <div class="score" id="score-display">
+                        Puntos: 0
+                    </div>
+                </div>
+
+                <div class="timer-container">
+                    <div class="timer" id="timer">20</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-text" id="question-text">
+                        ¿Cuál es la capital de Francia?
+                    </div>
+                </div>
+
+                <div class="answers-grid" id="answers-container">
+                    <button class="answer-btn" data-answer="0">París</button>
+                    <button class="answer-btn" data-answer="1">Londres</button>
+                    <button class="answer-btn" data-answer="2">Madrid</button>
+                    <button class="answer-btn" data-answer="3">Roma</button>
+                </div>
+            </div>
+
+            <!-- PANTALLA DE RESULTADOS -->
+            <div id="results-screen" class="screen">
+                <h2 class="results-title">¡Juego Terminado!</h2>
+                
+                <div class="results-card">
+                    <div class="player-name" id="final-player-name">
+                        Jugador: Juan Pérez
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="final-score">80</span>
+                            <div class="stat-label">Puntos Totales</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="correct-answers">8/10</span>
+                            <div class="stat-label">Respuestas Correctas</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="avg-time">12.5s</span>
+                            <div class="stat-label">Tiempo Promedio</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="percentage-circle" style="--percentage: 288deg;" id="percentage-circle">
+                                <span class="percentage-text" id="percentage-text">80%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-buttons">
+                    <button class="btn-primary" id="play-again-btn">
+                        🔄 Jugar de Nuevo
+                    </button>
+                    <button class="btn-secondary" id="change-config-btn">
+                        ⚙️ Cambiar Configuración
+                    </button>
+                    <button class="btn-secondary" id="exit-game-btn">
+                        🚪 Salir del Juego
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
