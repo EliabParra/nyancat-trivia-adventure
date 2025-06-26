@@ -5,29 +5,14 @@
     cursor: url('assets/nyan_cat_cursor_normal.png'), auto;
 }
 
+/* quiero una sombra en el header */
+
 body {
     font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(90deg, 
-        #ff0000 0%, #ff0000 16.66%,
-        #ff8000 16.66%, #ff8000 33.33%,
-        #ffff00 33.33%, #ffff00 50%,
-        #00ff00 50%, #00ff00 66.66%,
-        #0080ff 66.66%, #0080ff 83.33%,
-        #8000ff 83.33%, #8000ff 100%);
-    background-size: 100px 100px;
-    animation: rainbowScroll 2s linear infinite;
+    background: #0f4d8f;
     min-height: 100vh;
-    position: relative;
     overflow-x: hidden;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
     position: relative;
-}
-
-@keyframes rainbowScroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 0; }
 }
 
 /* Pixel stars */
@@ -67,27 +52,6 @@ body {
     z-index: 10;
 }
 
-/* Pixel borders */
-.pixel-border {
-    border: 4px solid #000000;
-    border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><rect width="12" height="12" fill="%23000"/><rect x="2" y="2" width="8" height="8" fill="%23fff"/></svg>') 4;
-    position: relative;
-}
-
-.pixel-border::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
-    background: 
-        linear-gradient(45deg, transparent 2px, #000 2px, #000 4px, transparent 4px),
-        linear-gradient(-45deg, transparent 2px, #000 2px, #000 4px, transparent 4px);
-    background-size: 8px 8px;
-    z-index: -1;
-}
-
 /* Header */
 .header {
     text-align: center;
@@ -102,6 +66,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header h1 {
@@ -110,10 +75,10 @@ body {
     text-shadow: 2px 2px 0px #000000;
     margin-bottom: 15px;
     line-height: 1.2;
-    animation: pixelBlink 2s infinite;
+    animation: titleBlink 2s infinite;
 }
 
-@keyframes pixelBlink {
+@keyframes titleBlink {
     0%, 90% { opacity: 1; }
     95% { opacity: 0.7; }
 }
@@ -143,6 +108,10 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.volume-slider-wrap {
+    display: flex;
 }
 
 .mute-btn {
@@ -620,6 +589,8 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .header { min-height: 250px; }
+    .subtitle { font-size: 12px; }
     .header h1 { font-size: 16px; }
     .nyan-cat-pixel { font-size: 32px; }
     .form-row { flex-direction: column; }
@@ -627,4 +598,36 @@ body {
     .timer { font-size: 24px; }
     .answers-container { grid-template-columns: 1fr; }
     .categories-grid { grid-template-columns: 1fr; }
+}
+
+/* Responsive volume control for mobile */
+@media (max-width: 768px) {
+    .volume-control {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .volume-slider-wrap {
+        display: none;
+        flex-direction: row;
+        align-items: center;
+        background: #003366;
+        border: 2px solid #ffffff;
+        padding: 8px;
+        margin-left: 8px;
+        border-radius: 6px;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        z-index: 200;
+    }
+    .volume-slider-wrap.active {
+        display: flex;
+    }
+    .volume-slider {
+        width: 60px;
+    }
 }

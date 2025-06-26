@@ -26,10 +26,12 @@
         </div>
 
         <div class="controls">
-            <div class="volume-control">
+            <div class="volume-control" id="volumeControl">
                 <button class="mute-btn" id="muteBtn">🔊</button>
-                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="2">
-                <div class="volume-display" id="volumeDisplay">2</div>
+                <div class="volume-slider-wrap" id="volumeSliderWrap">
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="2">
+                    <div class="volume-display" id="volumeDisplay">2</div>
+                </div>
             </div>
         </div>
 

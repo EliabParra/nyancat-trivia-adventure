@@ -55,3 +55,16 @@ function handleFirstInteraction() {
 document.addEventListener('click', handleFirstInteraction);
 document.addEventListener('keydown', handleFirstInteraction);
 document.addEventListener('touchstart', handleFirstInteraction);
+
+// Mostrar/ocultar slider de volumen en móviles
+const volumeControl = document.getElementById('volumeControl');
+const volumeSliderWrap = document.getElementById('volumeSliderWrap');
+muteBtn.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+        e.preventDefault();
+        volumeSliderWrap.classList.toggle('active');
+    }
+});
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && !volumeControl.contains(e.target)) volumeSliderWrap.classList.remove('active');
+});
