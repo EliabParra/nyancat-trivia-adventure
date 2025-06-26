@@ -42,52 +42,7 @@
 
         <!-- Setup Screen -->
         <div class="setup-screen" id="setupScreen">
-            <h2>GAME SETUP</h2>
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="playerName">PLAYER NAME:</label>
-                    <input type="text" id="playerName" placeholder="ENTER YOUR NAME..." maxlength="20" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="questionCount">QUESTION COUNT:</label>
-                    <select id="questionCount">
-                        <option value="5">5 QUESTIONS</option>
-                        <option value="10" selected>10 QUESTIONS</option>
-                        <option value="15">15 QUESTIONS</option>
-                        <option value="20">20 QUESTIONS</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="difficulty">DIFFICULTY LEVEL:</label>
-                    <select id="difficulty">
-                        <option value="easy">EASY MODE</option>
-                        <option value="medium" selected>MEDIUM MODE</option>
-                        <option value="hard">HARD MODE</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>QUESTION CATEGORIES:</label>
-                <div class="categories-grid">
-                    <button class="category-option selected" data-category="mixed">ALL MIXED</button>
-                    <button class="category-option" data-category="9">GENERAL</button>
-                    <button class="category-option" data-category="23">HISTORY</button>
-                    <button class="category-option" data-category="22">GEOGRAPHY</button>
-                    <button class="category-option" data-category="17">SCIENCE</button>
-                    <button class="category-option" data-category="21">SPORTS</button>
-                    <button class="category-option" data-category="11">MOVIES</button>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 30px;">
-                <button class="btn btn-success" id="startGameBtn">START GAME!</button>
-            </div>
         </div>
 
         <!-- Loading Screen -->
@@ -154,92 +109,65 @@
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
     <script>
-        // Category selection
-        document.querySelectorAll('.category-option').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
+        // // Category selection
+        // document.querySelectorAll('.category-option').forEach(btn => {
+        //     btn.addEventListener('click', function() {
+        //         document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
+        //         this.classList.add('selected');
+        //     });
+        // });
 
-        // Start game button
-        document.getElementById('startGameBtn').addEventListener('click', function() {
-            const playerName = document.getElementById('playerName').value.trim();
-            if (playerName.length < 2 || playerName.length > 20) {
-                alert('NAME MUST BE 2-20 CHARACTERS!');
-                return;
-            }
+        // // Start game button
+        // document.getElementById('startGameBtn').addEventListener('click', function() {
+        //     const playerName = document.getElementById('playerName').value.trim();
+        //     if (playerName.length < 2 || playerName.length > 20) {
+        //         alert('NAME MUST BE 2-20 CHARACTERS!');
+        //         return;
+        //     }
             
-            // Here you'll add your game logic
-            console.log('Starting game for:', playerName);
+        //     // Here you'll add your game logic
+        //     console.log('Starting game for:', playerName);
             
-            // Show loading screen (example)
-            document.getElementById('setupScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'block';
+        //     // Show loading screen (example)
+        //     document.getElementById('setupScreen').style.display = 'none';
+        //     document.getElementById('loadingScreen').style.display = 'block';
             
-            // Simulate loading and then show game screen
-            setTimeout(() => {
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('gameScreen').style.display = 'block';
-            }, 2000);
-        });
+        //     // Simulate loading and then show game screen
+        //     setTimeout(() => {
+        //         document.getElementById('loadingScreen').style.display = 'none';
+        //         document.getElementById('gameScreen').style.display = 'block';
+        //     }, 2000);
+        // });
 
-        // Answer buttons
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('answer-btn')) {
-                // Here you'll add your answer logic
-                console.log('Answer selected:', e.target.textContent);
-            }
-        });
+        // // Answer buttons
+        // document.addEventListener('click', function(e) {
+        //     if (e.target.classList.contains('answer-btn')) {
+        //         // Here you'll add your answer logic
+        //         console.log('Answer selected:', e.target.textContent);
+        //     }
+        // });
 
-        // Results buttons
-        document.getElementById('playAgainBtn').addEventListener('click', function() {
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            // Reset game logic here
-        });
+        // // Results buttons
+        // document.getElementById('playAgainBtn').addEventListener('click', function() {
+        //     document.getElementById('resultsScreen').style.display = 'none';
+        //     document.getElementById('gameScreen').style.display = 'block';
+        //     // Reset game logic here
+        // });
 
-        document.getElementById('newConfigBtn').addEventListener('click', function() {
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('setupScreen').style.display = 'block';
-            // Reset configuration here
-        });
+        // document.getElementById('newConfigBtn').addEventListener('click', function() {
+        //     document.getElementById('resultsScreen').style.display = 'none';
+        //     document.getElementById('setupScreen').style.display = 'block';
+        //     // Reset configuration here
+        // });
 
-        document.getElementById('exitBtn').addEventListener('click', function() {
-            if (confirm('ARE YOU SURE YOU WANT TO EXIT?')) {
-                // Handle exit logic here
-                location.reload();
-            }
-        });
-
-        // Create pixel stars periodically
-        function createPixelStar() {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            document.querySelector('.stars').appendChild(star);
-            
-            setTimeout(() => {
-                star.remove();
-            }, 3000);
-        }
-
-        // Create new stars periodically
-        setInterval(createPixelStar, 2000);
-
-        // Add sound effect simulation (visual feedback)
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('button, .category-option')) {
-                e.target.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    e.target.style.transform = '';
-                }, 100);
-            }
-        });
+        // document.getElementById('exitBtn').addEventListener('click', function() {
+        //     if (confirm('ARE YOU SURE YOU WANT TO EXIT?')) {
+        //         // Handle exit logic here
+        //         location.reload();
+        //     }
+        // });
     </script>
 </body>
 </html>

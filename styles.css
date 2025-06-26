@@ -236,7 +236,7 @@ body {
     box-shadow: inset 2px 2px 0px #000000;
 }
 
-.categories-grid {
+/* .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
@@ -263,7 +263,7 @@ body {
 .category-option.selected {
     background: #ffff00;
     box-shadow: inset 2px 2px 0px #000000;
-}
+} */
 
 /* Game Screen */
 .game-screen {
@@ -597,7 +597,8 @@ body {
     .game-header { flex-direction: column; text-align: center; }
     .timer { font-size: 24px; }
     .answers-container { grid-template-columns: 1fr; }
-    .categories-grid { grid-template-columns: 1fr; }
+    /* .categories-grid { grid-template-columns: 1fr; } */
+    .categories-select option { font-size: 8px; }
 }
 
 /* Responsive volume control for mobile */

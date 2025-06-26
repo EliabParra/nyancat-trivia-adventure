@@ -1,8 +1,29 @@
+import SetupScreenComponent from "/SetupScreenComponent/setup.js";
+
+const $ = $ => document.querySelector($)
+const $$ = $$ => document.querySelectorAll($$)
+
+const setupScreen = new SetupScreenComponent();
+
+setupScreen.startButton.addEventListener('click', () => {
+    setupScreen.startGame();
+    if (!setupScreen.playerName) return
+    const gameData = setupScreen.gameData;
+    setupScreen.setupContainer.style.display = 'none';
+    $('#loadingScreen').style.display = 'block';
+    setTimeout(() => {
+        $('#loadingScreen').style.display = 'none';
+        $('#gameScreen').style.display = 'block';
+    }, 1500);
+    console.log(gameData);
+});
+
+
 // Controles de audio
-const audio = document.getElementById('nyanAudio');
-const muteBtn = document.getElementById('muteBtn');
-const volumeSlider = document.getElementById('volumeSlider');
-const volumeDisplay = document.getElementById('volumeDisplay');
+const audio = $('#nyanAudio');
+const muteBtn = $('#muteBtn');
+const volumeSlider = $('#volumeSlider');
+const volumeDisplay = $('#volumeDisplay');
 let isMuted = false;
 
 // Configurar volumen inicial
@@ -57,8 +78,8 @@ document.addEventListener('keydown', handleFirstInteraction);
 document.addEventListener('touchstart', handleFirstInteraction);
 
 // Mostrar/ocultar slider de volumen en móviles
-const volumeControl = document.getElementById('volumeControl');
-const volumeSliderWrap = document.getElementById('volumeSliderWrap');
+const volumeControl = $('#volumeControl');
+const volumeSliderWrap = $('#volumeSliderWrap');
 muteBtn.addEventListener('click', (e) => {
     if (window.innerWidth <= 768) {
         e.preventDefault();
@@ -67,4 +88,31 @@ muteBtn.addEventListener('click', (e) => {
 });
 document.addEventListener('click', (e) => {
     if (window.innerWidth <= 768 && !volumeControl.contains(e.target)) volumeSliderWrap.classList.remove('active');
+});
+
+// Create pixel stars periodically
+function createPixelStar() {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    document.querySelector('.stars').appendChild(star);
+    
+    setTimeout(() => {
+        star.remove();
+    }, 3000);
+}
+
+// Create new stars periodically
+setInterval(createPixelStar, 2000);
+
+// Add sound effect simulation (visual feedback)
+document.addEventListener('click', (e) => {
+    if (e.target.matches('button, .category-option')) {
+        e.target.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            e.target.style.transform = '';
+        }, 100);
+    }
 });
