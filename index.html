@@ -3,136 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trivia Challenge</title>
+    <title>🌈 Nyan Cat Trivia Adventure! 🐱</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Pixel stars -->
+    <div class="stars">
+        <div class="star" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="star" style="top: 20%; left: 80%; animation-delay: 1s;"></div>
+        <div class="star" style="top: 70%; left: 20%; animation-delay: 2s;"></div>
+        <div class="star" style="top: 80%; left: 70%; animation-delay: 3s;"></div>
+        <div class="star" style="top: 40%; left: 90%; animation-delay: 4s;"></div>
+        <div class="star" style="top: 60%; left: 5%; animation-delay: 5s;"></div>
+    </div>
+
     <div class="container">
-        <div class="game-card">
-            <!-- PANTALLA DE CONFIGURACIÓN -->
-            <div id="config-screen" class="screen active">
-                <h1>🧠 Trivia Challenge</h1>
+        <!-- Header -->
+        <div class="header">
+            <h1>NYAN CAT<br>TRIVIA ADVENTURE!</h1>
+            <div class="subtitle">GET READY FOR 8-BIT KNOWLEDGE!</div>
+        </div>
+
+        <div class="controls">
+            <div class="volume-control">
+                <button class="mute-btn" id="muteBtn">🔊</button>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="2">
+                <div class="volume-display" id="volumeDisplay">2</div>
+            </div>
+        </div>
+
+        <audio id="nyanAudio" loop preload="auto">
+            <source src="https://www.nyan.cat/music/original.mp3" type="audio/mpeg">
+            <source src="https://nyancat.com/music/original.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Setup Screen -->
+        <div class="setup-screen" id="setupScreen">
+            <h2>GAME SETUP</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="playerName">PLAYER NAME:</label>
+                    <input type="text" id="playerName" placeholder="ENTER YOUR NAME..." maxlength="20" required>
+                </div>
                 
-                <form id="config-form">
-                    <div class="form-group">
-                        <label for="player-name">Nombre del Jugador</label>
-                        <input type="text" id="player-name" placeholder="Ingresa tu nombre" minlength="2" maxlength="20" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="question-count">Cantidad de Preguntas</label>
-                        <input type="number" id="question-count" min="5" max="20" value="10" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nivel de Dificultad</label>
-                        <div class="difficulty-buttons">
-                            <button type="button" class="difficulty-btn" data-difficulty="easy">🟢 Fácil</button>
-                            <button type="button" class="difficulty-btn selected" data-difficulty="medium">🟡 Medio</button>
-                            <button type="button" class="difficulty-btn" data-difficulty="hard">🔴 Difícil</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category">Categoría</label>
-                        <select id="category" required>
-                            <option value="">Mixtas (Todas las categorías)</option>
-                            <option value="9">Conocimiento General</option>
-                            <option value="17">Ciencia y Naturaleza</option>
-                            <option value="21">Deportes</option>
-                            <option value="22">Geografía</option>
-                            <option value="23">Historia</option>
-                            <option value="11">Películas</option>
-                            <option value="12">Música</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="start-game-btn">
-                        🚀 Comenzar Juego
-                    </button>
-                </form>
-            </div>
-
-            <!-- PANTALLA DE CARGA -->
-            <div id="loading-screen" class="screen">
-                <div class="loader"></div>
-                <div class="loading-text">Cargando preguntas...</div>
-            </div>
-
-            <!-- PANTALLA DE JUEGO -->
-            <div id="game-screen" class="screen">
-                <div class="game-header">
-                    <div class="question-counter" id="question-counter">
-                        Pregunta 1 de 10
-                    </div>
-                    <div class="score" id="score-display">
-                        Puntos: 0
-                    </div>
-                </div>
-
-                <div class="timer-container">
-                    <div class="timer" id="timer">20</div>
-                </div>
-
-                <div class="question-container">
-                    <div class="question-text" id="question-text">
-                        ¿Cuál es la capital de Francia?
-                    </div>
-                </div>
-
-                <div class="answers-grid" id="answers-container">
-                    <button class="answer-btn" data-answer="0">París</button>
-                    <button class="answer-btn" data-answer="1">Londres</button>
-                    <button class="answer-btn" data-answer="2">Madrid</button>
-                    <button class="answer-btn" data-answer="3">Roma</button>
+                <div class="form-group">
+                    <label for="questionCount">QUESTION COUNT:</label>
+                    <select id="questionCount">
+                        <option value="5">5 QUESTIONS</option>
+                        <option value="10" selected>10 QUESTIONS</option>
+                        <option value="15">15 QUESTIONS</option>
+                        <option value="20">20 QUESTIONS</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- PANTALLA DE RESULTADOS -->
-            <div id="results-screen" class="screen">
-                <h2 class="results-title">¡Juego Terminado!</h2>
-                
-                <div class="results-card">
-                    <div class="player-name" id="final-player-name">
-                        Jugador: Juan Pérez
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-value" id="final-score">80</span>
-                            <div class="stat-label">Puntos Totales</div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="correct-answers">8/10</span>
-                            <div class="stat-label">Respuestas Correctas</div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="avg-time">12.5s</span>
-                            <div class="stat-label">Tiempo Promedio</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="percentage-circle" style="--percentage: 288deg;" id="percentage-circle">
-                                <span class="percentage-text" id="percentage-text">80%</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="difficulty">DIFFICULTY LEVEL:</label>
+                    <select id="difficulty">
+                        <option value="easy">EASY MODE</option>
+                        <option value="medium" selected>MEDIUM MODE</option>
+                        <option value="hard">HARD MODE</option>
+                    </select>
                 </div>
+            </div>
 
-                <div class="results-buttons">
-                    <button class="btn-primary" id="play-again-btn">
-                        🔄 Jugar de Nuevo
-                    </button>
-                    <button class="btn-secondary" id="change-config-btn">
-                        ⚙️ Cambiar Configuración
-                    </button>
-                    <button class="btn-secondary" id="exit-game-btn">
-                        🚪 Salir del Juego
-                    </button>
+            <div class="form-group">
+                <label>QUESTION CATEGORIES:</label>
+                <div class="categories-grid">
+                    <button class="category-option selected" data-category="mixed">ALL MIXED</button>
+                    <button class="category-option" data-category="9">GENERAL</button>
+                    <button class="category-option" data-category="23">HISTORY</button>
+                    <button class="category-option" data-category="22">GEOGRAPHY</button>
+                    <button class="category-option" data-category="17">SCIENCE</button>
+                    <button class="category-option" data-category="21">SPORTS</button>
+                    <button class="category-option" data-category="11">MOVIES</button>
                 </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-success" id="startGameBtn">START GAME!</button>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div class="loading" id="loadingScreen">
+            <div class="spinner"></div>
+            <div class="loading-text">NYAN CAT IS FLYING<br>THROUGH SPACE<br>COLLECTING QUESTIONS...</div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-header">
+                <div class="progress-info" id="progressInfo">Q: 1/10</div>
+                <div class="score-info" id="scoreInfo">SCORE: 0</div>
+            </div>
+
+            <div class="timer-container">
+                <div class="timer" id="timer">20</div>
+                <div class="timer-label">SECONDS LEFT</div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-text" id="questionText">
+                    WHAT IS THE SPEED OF LIGHT IN VACUUM?
+                </div>
+            </div>
+
+            <div class="answers-container" id="answersContainer">
+                <button class="answer-btn">299,792,458 M/S</button>
+                <button class="answer-btn">300,000,000 M/S</button>
+                <button class="answer-btn">299,792,458 KM/S</button>
+                <button class="answer-btn">186,282 MILES/S</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <h2>GAME COMPLETE!</h2>
+            <div class="results-trophy">🏆</div>
+            
+            <div class="results-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="finalScore">850</span>
+                    <div class="stat-label">TOTAL POINTS</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="correctAnswers">8/10</span>
+                    <div class="stat-label">CORRECT</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="successRate">80%</span>
+                    <div class="stat-label">SUCCESS RATE</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="avgTime">15.3S</span>
+                    <div class="stat-label">AVG TIME</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn btn-success" id="playAgainBtn">PLAY AGAIN</button>
+                <button class="btn btn-secondary" id="newConfigBtn">NEW CONFIG</button>
+                <button class="btn" id="exitBtn">EXIT GAME</button>
             </div>
         </div>
     </div>
 
     <script src="main.js"></script>
+    <script>
+        // Category selection
+        document.querySelectorAll('.category-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Start game button
+        document.getElementById('startGameBtn').addEventListener('click', function() {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (playerName.length < 2 || playerName.length > 20) {
+                alert('NAME MUST BE 2-20 CHARACTERS!');
+                return;
+            }
+            
+            // Here you'll add your game logic
+            console.log('Starting game for:', playerName);
+            
+            // Show loading screen (example)
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'block';
+            
+            // Simulate loading and then show game screen
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+            }, 2000);
+        });
+
+        // Answer buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('answer-btn')) {
+                // Here you'll add your answer logic
+                console.log('Answer selected:', e.target.textContent);
+            }
+        });
+
+        // Results buttons
+        document.getElementById('playAgainBtn').addEventListener('click', function() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            // Reset game logic here
+        });
+
+        document.getElementById('newConfigBtn').addEventListener('click', function() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'block';
+            // Reset configuration here
+        });
+
+        document.getElementById('exitBtn').addEventListener('click', function() {
+            if (confirm('ARE YOU SURE YOU WANT TO EXIT?')) {
+                // Handle exit logic here
+                location.reload();
+            }
+        });
+
+        // Create pixel stars periodically
+        function createPixelStar() {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            document.querySelector('.stars').appendChild(star);
+            
+            setTimeout(() => {
+                star.remove();
+            }, 3000);
+        }
+
+        // Create new stars periodically
+        setInterval(createPixelStar, 2000);
+
+        // Add sound effect simulation (visual feedback)
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('button, .category-option')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 100);
+            }
+        });
+    </script>
 </body>
 </html>
