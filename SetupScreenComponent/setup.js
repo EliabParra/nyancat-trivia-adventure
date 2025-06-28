@@ -3,13 +3,13 @@ const $$ = $$ => document.querySelectorAll($$)
 
 export default class SetupScreenComponent {
     constructor() {
-        this.gameData = {};
-        this.setupContainer = $('#setupScreen');
-        this.renderScreen();
-        this.startButton = $('#startGameBtn');
-        this.categoriesSelect = $('#categories');
-        this.categories = this.getCategories();
-        this.renderOptions();
+        this.gameData = {}
+        this.setupContainer = $('#setupScreen')
+        this.renderScreen()
+        this.startButton = $('#startGameBtn')
+        this.categoriesSelect = $('#categories')
+        this.categories = this.getCategories()
+        this.renderOptions()
     }
 
     renderScreen() {
@@ -55,38 +55,38 @@ export default class SetupScreenComponent {
                 <button class="btn btn-success" id="startGameBtn">START GAME!</button>
             </div>
         `
-        this.setupContainer.innerHTML += html;
+        this.setupContainer.innerHTML += html
     }
     
     async getCategories() {
-        const response = await fetch('https://opentdb.com/api_category.php');
-        const data = await response.json();
+        const response = await fetch('https://opentdb.com/api_category.php')
+        const data = await response.json()
         return data.trivia_categories
     }
 
     getPlayerName() {
-        this.playerName = $('#playerName').value.trim();
+        this.playerName = $('#playerName').value.trim()
         if (this.playerName.length < 2 || this.playerName.length > 20) {
-            alert('NAME MUST BE 2-20 CHARACTERS!');
-            return;
+            alert('NAME MUST BE 2-20 CHARACTERS!')
+            return
         }
-        return this.playerName;
+        return this.playerName
     }
     
     renderOptions() {
         this.categories.then(categories => {
             categories.forEach(category => {
-                const { id, name } = category;
-                this.categoriesSelect.innerHTML += `<option value="${id}">${name}</option>`;
-            });
-        });
+                const { id, name } = category
+                this.categoriesSelect.innerHTML += `<option value="${id}">${name}</option>`
+            })
+        })
     }
     
     startGame() {
-        this.playerName = this.getPlayerName();
-        this.questionCount = $('#questionCount').value;
-        this.difficulty = $('#difficulty').value;
-        this.category = this.categoriesSelect.value;
+        this.playerName = this.getPlayerName()
+        this.questionCount = $('#questionCount').value
+        this.difficulty = $('#difficulty').value
+        this.category = this.categoriesSelect.value
 
         this.gameData = {
             playerName: this.playerName,
