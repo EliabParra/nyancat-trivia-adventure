@@ -1,5 +1,4 @@
 const $ = $ => document.querySelector($)
-const $$ = $$ => document.querySelectorAll($$)
 
 export default class SetupScreenComponent {
     constructor() {
@@ -13,7 +12,7 @@ export default class SetupScreenComponent {
     }
 
     renderScreen() {
-        let html = `
+        this.setupContainer.innerHTML += `
             <h2>GAME SETUP</h2>
             
             <div class="form-row">
@@ -55,7 +54,6 @@ export default class SetupScreenComponent {
                 <button class="btn btn-success" id="startGameBtn">START GAME!</button>
             </div>
         `
-        this.setupContainer.innerHTML += html
     }
     
     async getCategories() {

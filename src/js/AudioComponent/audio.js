@@ -1,7 +1,8 @@
-const $ = $ => document.querySelector($)
-const $$ = $$ => document.querySelectorAll($$)
-
 export default class AudioComponent extends HTMLElement {
+    static get observedAttributes() {
+        return ['src']
+    }
+
     constructor() {
         super()
         this.attachShadow({ mode: 'open' })
@@ -15,7 +16,14 @@ export default class AudioComponent extends HTMLElement {
         this.setupEventListeners()
     }
 
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'src' && this.audio) {
+            this.audio.src = newValue || 'https://www.nyan.cat/music/original.mp3'
+        }
+    }
+
     render() {
+        const src = this.getAttribute('src') || 'https://www.nyan.cat/music/original.mp3'
         this.shadowRoot.innerHTML = `
             <style>
                 .controls {
@@ -137,11 +145,7 @@ export default class AudioComponent extends HTMLElement {
                     </div>
                 </div>
             </div>
-
-            <audio id="nyanAudio" loop preload="auto">
-                <source src="assets/nyan_cat_music.mp3" type="audio/mpeg">
-                <source src="https://www.nyan.cat/music/original.mp3" type="audio/mpeg">
-            </audio>
+            <audio id="nyanAudio" loop preload="auto" src="${src}"></audio>
         `
     }
 
@@ -162,7 +166,6 @@ export default class AudioComponent extends HTMLElement {
             const volume = e.target.value
             this.volumeDisplay.textContent = volume
             this.audio.volume = volume / 100
-            
             if (volume == 0) {
                 this.muteBtn.textContent = '🔇'
                 this.isMuted = true
@@ -174,7 +177,7 @@ export default class AudioComponent extends HTMLElement {
             }
         })
 
-        // Nueva lógica para iniciar el audio tras interacción
+        // Iniciar audio tras cualquier interacción
         let started = false
         const startAudio = () => {
             if (!started) {
@@ -183,8 +186,6 @@ export default class AudioComponent extends HTMLElement {
                 started = true
             }
         }
-
-        // Escucha eventos globales y en el shadowRoot
         const events = ['click', 'keydown', 'touchstart', 'touchend', 'pointerdown']
         events.forEach(ev => {
             window.addEventListener(ev, startAudio, { once: true, passive: true })
@@ -201,14 +202,11 @@ export default class AudioComponent extends HTMLElement {
         this.muteBtn.addEventListener('click', (e) => {
             if (window.innerWidth <= 768) {
                 e.preventDefault()
-                volumeSliderWrap.classList.add('active')
+                volumeSliderWrap.classList.toggle('active')
             }
         })
-
-        // Cierra el slider si se hace tap fuera del control, en móvil
         document.addEventListener('click', (e) => {
             if (window.innerWidth > 768) return
-            // Detecta si el click fue dentro del shadowRoot
             const path = e.composedPath()
             const isInside = path.includes(volumeControl)
             if (!isInside) {

@@ -1,5 +1,4 @@
 const $ = $ => document.querySelector($)
-const $$ = $$ => document.querySelectorAll($$)
 
 export default class GameScreenComponent {
     constructor({ playerName, questionCount, difficulty, category }) {
@@ -15,7 +14,7 @@ export default class GameScreenComponent {
     }
 
     renderScreen() {
-        let html = `
+        this.gameScreenContainer.innerHTML = `
             <div class="game-header">
                 <div class="progress-info" id="progressInfo"></div>
                 <div class="score-info" id="scoreInfo">SCORE: ${this.score}</div>
@@ -37,8 +36,6 @@ export default class GameScreenComponent {
                 
             </div>
         `
-
-        this.gameScreenContainer.innerHTML = html
     }
 
     startTimer() {

@@ -1,7 +1,7 @@
-import SetupScreenComponent from "/SetupScreenComponent/setup.js"
-import GameScreenComponent from "/GameScreenComponent/game.js"
-import AudioComponent from "/AudioComponent/audio.js"
-import PixelStarsComponent from "/PixelStarsComponent/stars.js"
+import SetupScreenComponent from "./SetupScreenComponent/setup.js"
+import GameScreenComponent from "./GameScreenComponent/game.js"
+import AudioComponent from "./AudioComponent/audio.js"
+import PixelStarsComponent from "./PixelStarsComponent/stars.js"
 
 const $ = $ => document.querySelector($)
 const $$ = $$ => document.querySelectorAll($$)
