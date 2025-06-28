@@ -25,20 +25,7 @@
             <div class="subtitle">GET READY FOR 8-BIT KNOWLEDGE!</div>
         </div>
 
-        <div class="controls">
-            <div class="volume-control" id="volumeControl">
-                <button class="mute-btn" id="muteBtn">🔊</button>
-                <div class="volume-slider-wrap" id="volumeSliderWrap">
-                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="2">
-                    <div class="volume-display" id="volumeDisplay">2</div>
-                </div>
-            </div>
-        </div>
-
-        <audio id="nyanAudio" loop preload="auto">
-            <source src="https://www.nyan.cat/music/original.mp3" type="audio/mpeg">
-            <source src="https://nyancat.com/music/original.mp3" type="audio/mpeg">
-        </audio>
+        <nyan-cat-music></nyan-cat-music>
 
         <!-- Setup Screen -->
         <div class="setup-screen" id="setupScreen">
