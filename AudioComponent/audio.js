@@ -39,6 +39,7 @@ export default class AudioComponent extends HTMLElement {
 
                 .volume-slider-wrap {
                     display: flex;
+                    align-items: center;
                 }
 
                 .mute-btn {
@@ -193,6 +194,27 @@ export default class AudioComponent extends HTMLElement {
         })
         this.muteBtn.addEventListener('click', startAudio)
         this.volumeSlider.addEventListener('input', startAudio)
+
+        // Mostrar/ocultar slider de volumen en móviles
+        const volumeControl = this.shadowRoot.querySelector('#volumeControl')
+        const volumeSliderWrap = this.shadowRoot.querySelector('#volumeSliderWrap')
+        this.muteBtn.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                e.preventDefault()
+                volumeSliderWrap.classList.add('active')
+            }
+        })
+
+        // Cierra el slider si se hace tap fuera del control, en móvil
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth > 768) return
+            // Detecta si el click fue dentro del shadowRoot
+            const path = e.composedPath()
+            const isInside = path.includes(volumeControl)
+            if (!isInside) {
+                volumeSliderWrap.classList.remove('active')
+            }
+        })
     }
 }
 
