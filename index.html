@@ -53,28 +53,7 @@
 
         <!-- Game Screen -->
         <div class="game-screen" id="gameScreen">
-            <div class="game-header">
-                <div class="progress-info" id="progressInfo">Q: 1/10</div>
-                <div class="score-info" id="scoreInfo">SCORE: 0</div>
-            </div>
-
-            <div class="timer-container">
-                <div class="timer" id="timer">20</div>
-                <div class="timer-label">SECONDS LEFT</div>
-            </div>
-
-            <div class="question-container">
-                <div class="question-text" id="questionText">
-                    WHAT IS THE SPEED OF LIGHT IN VACUUM?
-                </div>
-            </div>
-
-            <div class="answers-container" id="answersContainer">
-                <button class="answer-btn">299,792,458 M/S</button>
-                <button class="answer-btn">300,000,000 M/S</button>
-                <button class="answer-btn">299,792,458 KM/S</button>
-                <button class="answer-btn">186,282 MILES/S</button>
-            </div>
+            
         </div>
 
         <!-- Results Screen -->
@@ -110,64 +89,5 @@
     </div>
 
     <script type="module" src="main.js"></script>
-    <script>
-        // // Category selection
-        // document.querySelectorAll('.category-option').forEach(btn => {
-        //     btn.addEventListener('click', function() {
-        //         document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
-        //         this.classList.add('selected');
-        //     });
-        // });
-
-        // // Start game button
-        // document.getElementById('startGameBtn').addEventListener('click', function() {
-        //     const playerName = document.getElementById('playerName').value.trim();
-        //     if (playerName.length < 2 || playerName.length > 20) {
-        //         alert('NAME MUST BE 2-20 CHARACTERS!');
-        //         return;
-        //     }
-            
-        //     // Here you'll add your game logic
-        //     console.log('Starting game for:', playerName);
-            
-        //     // Show loading screen (example)
-        //     document.getElementById('setupScreen').style.display = 'none';
-        //     document.getElementById('loadingScreen').style.display = 'block';
-            
-        //     // Simulate loading and then show game screen
-        //     setTimeout(() => {
-        //         document.getElementById('loadingScreen').style.display = 'none';
-        //         document.getElementById('gameScreen').style.display = 'block';
-        //     }, 2000);
-        // });
-
-        // // Answer buttons
-        // document.addEventListener('click', function(e) {
-        //     if (e.target.classList.contains('answer-btn')) {
-        //         // Here you'll add your answer logic
-        //         console.log('Answer selected:', e.target.textContent);
-        //     }
-        // });
-
-        // // Results buttons
-        // document.getElementById('playAgainBtn').addEventListener('click', function() {
-        //     document.getElementById('resultsScreen').style.display = 'none';
-        //     document.getElementById('gameScreen').style.display = 'block';
-        //     // Reset game logic here
-        // });
-
-        // document.getElementById('newConfigBtn').addEventListener('click', function() {
-        //     document.getElementById('resultsScreen').style.display = 'none';
-        //     document.getElementById('setupScreen').style.display = 'block';
-        //     // Reset configuration here
-        // });
-
-        // document.getElementById('exitBtn').addEventListener('click', function() {
-        //     if (confirm('ARE YOU SURE YOU WANT TO EXIT?')) {
-        //         // Handle exit logic here
-        //         location.reload();
-        //     }
-        // });
-    </script>
 </body>
 </html>

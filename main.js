@@ -1,4 +1,5 @@
 import SetupScreenComponent from "/SetupScreenComponent/setup.js";
+import GameScreenComponent from "/GameScreenComponent/game.js";
 
 const $ = $ => document.querySelector($)
 const $$ = $$ => document.querySelectorAll($$)
@@ -14,6 +15,7 @@ setupScreen.startButton.addEventListener('click', () => {
     setTimeout(() => {
         $('#loadingScreen').style.display = 'none';
         $('#gameScreen').style.display = 'block';
+        const gameScreen = new GameScreenComponent(gameData)
     }, 1500);
     console.log(gameData);
 });
