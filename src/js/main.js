@@ -2,6 +2,8 @@ import SetupScreenComponent from "./SetupScreenComponent/setup.js"
 import AudioComponent from "./AudioComponent/audio.js"
 import PixelStarsComponent from "./PixelStarsComponent/stars.js"
 
+const $ = $ => document.querySelector($)
+
 const loading = document.createElement('loading-spinner')
-document.body.appendChild(loading)
+$('.container').appendChild(loading)
 new SetupScreenComponent({}, loading).show()
