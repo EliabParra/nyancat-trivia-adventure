@@ -2,7 +2,7 @@ import ResultsScreenComponent from "../ResultsScreenComponent/results.js"
 const $ = $ => document.querySelector($)
 
 export default class GameScreenComponent {
-    constructor({ playerName, questionCount, difficulty, category }) {
+    constructor({ playerName, questionCount, difficulty, category }, loading) {
         this.gameScreenContainer = $('#gameScreen')
         this.playerName = playerName
         this.questionCount = questionCount
@@ -13,11 +13,163 @@ export default class GameScreenComponent {
         this.correctAnswers = 0
         this.avgTime = 0
         this.timeSpent = []
+        this.loading = loading
         this.fetchQuestion()
     }
 
     renderScreen() {
         this.gameScreenContainer.innerHTML = `
+            <style>
+                .game-screen {
+                    display: none;
+                    background: #ff99cc;
+                    border: 4px solid #000000;
+                    padding: 30px;
+                    position: relative;
+                }
+
+                .game-screen::before {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    background: #ffffff;
+                    z-index: -1;
+                }
+
+                .game-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 25px;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                }
+
+                .progress-info, .score-info, .correct-answers-info {
+                    font-size: 10px;
+                    color: #000000;
+                    text-shadow: 1px 1px 0px #ffffff;
+                    background: #00ccff;
+                    padding: 8px 12px;
+                    border: 2px solid #000000;
+                }
+
+                .timer-container {
+                    text-align: center;
+                    margin-bottom: 25px;
+                    background: #000000;
+                    border: 4px solid #ffffff;
+                    padding: 15px;
+                }
+
+                .timer {
+                    font-size: 32px;
+                    color: #ffffff;
+                    font-family: 'Press Start 2P', monospace;
+                    animation: pixelPulse 1s infinite;
+                }
+
+                .timer.warning {
+                    color: #ff0000;
+                    animation: pixelAlarm 0.5s infinite;
+                }
+
+                @keyframes pixelPulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+
+                @keyframes pixelAlarm {
+                    0%, 100% { color: #ff0000; }
+                    50% { color: #ffffff; }
+                }
+
+                .timer-label {
+                    color: #ffffff;
+                    font-size: 8px;
+                    margin-top: 10px;
+                }
+
+                .question-container {
+                    background: #0033cc;
+                    border: 4px solid #000000;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    position: relative;
+                }
+
+                .question-container::before {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    background: #ffffff;
+                    z-index: -1;
+                }
+
+                .question-text {
+                    font-size: 12px;
+                    color: #ffffff;
+                    text-shadow: 1px 1px 0px #000000;
+                    line-height: 1.6;
+                    text-align: center;
+                }
+
+                .answers-container {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                }
+
+                .answer-btn {
+                    background: #ffff00;
+                    border: 3px solid #000000;
+                    padding: 15px 10px;
+                    color: #000000;
+                    font-size: 9px;
+                    font-family: 'Press Start 2P', monospace;
+                    min-height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    line-height: 1.3;
+                    transition: none;
+                    cursor: url('/src/assets/nyan_cat_cursor_pointer.png'), pointer;
+                }
+
+                .answer-btn:hover {
+                    background: #99ff99;
+                    box-shadow: inset 2px 2px 0px #000000;
+                }
+
+                .answer-btn.correct {
+                    background: #00ff00;
+                    animation: pixelCorrect 0.6s ease;
+                }
+
+                .answer-btn.incorrect {
+                    background: #ff0000;
+                    color: #ffffff;
+                    animation: pixelIncorrect 0.6s ease;
+                }
+
+                @keyframes pixelCorrect {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+
+                @keyframes pixelIncorrect {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-4px); }
+                    75% { transform: translateX(4px); }
+                }
+            </style>
             <div class="game-header">
                 <div class="progress-info" id="progressInfo"></div>
                 <div class="score-info" id="scoreInfo">SCORE: ${this.score}</div>
@@ -35,9 +187,7 @@ export default class GameScreenComponent {
                 </div>
             </div>
 
-            <div class="answers-container" id="answersContainer">
-                
-            </div>
+            <div class="answers-container" id="answersContainer"></div>
         `
 
         this.renderAnswers()
@@ -72,10 +222,8 @@ export default class GameScreenComponent {
                     timerElement.classList.remove('warning')
                     this.fetchQuestion()
                 } else {
-                    this.gameScreenContainer.style.display = 'none'
-                    $('#resultsScreen').style.display = 'block'
-                    console.log(this.getResults())
-                    const resultsScreen = new ResultsScreenComponent(this.getResults())
+                    this.hide()
+                    new ResultsScreenComponent(this.getResults(), this.loading).show()
                 }
             }
         }, 1000)
@@ -85,14 +233,14 @@ export default class GameScreenComponent {
         try {
             const response = await fetch(`https://opentdb.com/api.php?amount=1&category=${this.category ? this.category : ''}&difficulty=${this.difficulty}&type=multiple`)
             const data = await response.json()
-            $('#loadingScreen').style.display = 'none'
-            $('#gameScreen').style.display = 'block'
+            this.loading.hide()
+            this.show()
             this.questionData = data.results[0]
             this.renderScreen()
         } catch (error) {
             console.error('Error fetching questions:', error)
-            $('#gameScreen').style.display = 'none'
-            $('#loadingScreen').innerHTML = 'Failed to load questions. Please try again later.'
+            this.hide()
+            this.loading.shadowRoot.innerHTML = 'Failed to load questions. Please try again later.'
         }
     }
 
@@ -100,6 +248,9 @@ export default class GameScreenComponent {
         const answersContainer = $('#answersContainer')
         const answers = [...this.questionData.incorrect_answers, this.questionData.correct_answer]
         answers.sort(() => Math.random() - 0.5)
+
+        const scoreInfo = $('#scoreInfo')
+        const correctAnswersInfo = $('#correctAnswersInfo')
 
         answersContainer.innerHTML = ''
         answers.forEach(answer => {
@@ -114,8 +265,8 @@ export default class GameScreenComponent {
 
                 if (this.checkAnswer(answer)) {
                     answerButton.classList.add('correct')
-                    $('#scoreInfo').textContent = `SCORE: ${this.score}`
-                    $('#correctAnswersInfo').textContent = `CORRECT ANSWERS: ${this.correctAnswers}`
+                    scoreInfo.textContent = `SCORE: ${this.score}`
+                    correctAnswersInfo.textContent = `CORRECT ANSWERS: ${this.correctAnswers}`
                 } else {
                     answerButton.classList.add('incorrect')
                     const correctAnswerButton = Array.from(answersContainer.children).find(btn => btn.textContent === this.questionData.correct_answer)
@@ -129,10 +280,8 @@ export default class GameScreenComponent {
                     if (this.currentQuestionIndex < this.questionCount) {
                         this.fetchQuestion()
                     } else {
-                        this.gameScreenContainer.style.display = 'none'
-                        $('#resultsScreen').style.display = 'block'
-                        console.log(this.getResults())
-                        const resultsScreen = new ResultsScreenComponent(this.getResults())
+                        this.hide()
+                        new ResultsScreenComponent(this.getResults(), this.loading).show()
                     }
                 }, 3000)
             })
@@ -169,5 +318,13 @@ export default class GameScreenComponent {
             score: this.score,
             avgTime: this.avgTime,
         }
+    }
+
+    show() {
+        if (this.gameScreenContainer) this.gameScreenContainer.style.display = 'block'
+    }
+
+    hide() {
+        if (this.gameScreenContainer) this.gameScreenContainer.style.display = 'none'
     }
 }

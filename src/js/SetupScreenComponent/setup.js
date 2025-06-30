@@ -1,9 +1,9 @@
 import GameScreenComponent from '../GameScreenComponent/game.js'
-
+import LoadingComponent from '../LoadingComponent/loading.js'
 const $ = $ => document.querySelector($)
 
 export default class SetupScreenComponent {
-    constructor({ playerName, questionCount, difficulty, category } = {}) {
+    constructor({ playerName, questionCount, difficulty, category } = {}, loading) {
         this.setupContainer = $('#setupScreen')
         this.setupContainer.style.display = 'block'
         this.gameData = {
@@ -12,14 +12,82 @@ export default class SetupScreenComponent {
             difficulty: difficulty || 'medium',
             category: category || '',
         }
+        this.loading = loading
         this.renderScreen()
-        this.addEventListeners()
     }
 
     renderScreen() {
         const { playerName, questionCount, difficulty } = this.gameData
 
         this.setupContainer.innerHTML = `
+            <style>
+                .setup-screen {
+                    background: #ff99cc;
+                    border: 4px solid #000000;
+                    padding: 30px;
+                    position: relative;
+                    margin-bottom: 20px;
+                    display: none;
+                }
+
+                .setup-screen::before {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    background: #ffffff;
+                    z-index: -1;
+                }
+
+                .setup-screen h2 {
+                    color: #000000;
+                    font-size: 16px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    text-shadow: 1px 1px 0px #ffffff;
+                }
+
+                .form-row {
+                    display: flex;
+                    gap: 20px;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                }
+
+                .form-group {
+                    flex: 1;
+                    min-width: 250px;
+                }
+
+                .form-group label {
+                    display: block;
+                    color: #000000;
+                    font-size: 10px;
+                    margin-bottom: 8px;
+                    text-shadow: 1px 1px 0px #ffffff;
+                }
+
+                .form-group input,
+                .form-group select {
+                    width: 100%;
+                    padding: 10px;
+                    border: 3px solid #000000;
+                    font-size: 10px;
+                    font-family: 'Press Start 2P', monospace;
+                    background: #ffffff;
+                    color: #000000;
+                    transition: none;
+                }
+
+                .form-group input:focus,
+                .form-group select:focus {
+                    outline: none;
+                    background: #ffff99;
+                    box-shadow: inset 2px 2px 0px #000000;
+                }
+            </style>
             <h2>GAME SETUP</h2>
             
             <div class="form-row">
@@ -62,9 +130,10 @@ export default class SetupScreenComponent {
             </div>
         `
 
-        this.renderOptions()
+        this.renderCategories()
         $('#questionCount').value = questionCount
         $('#difficulty').value = difficulty
+        this.addEventListeners()
     }
     
     async getCategories() {
@@ -82,7 +151,7 @@ export default class SetupScreenComponent {
         return this.playerName
     }
     
-    renderOptions() {
+    renderCategories() {
         this.categoriesSelect = $('#categories')
         this.getCategories().then(categories => {
             categories.forEach(category => {
@@ -116,7 +185,15 @@ export default class SetupScreenComponent {
         this.setGameData()
         if (!this.playerName) return
         this.setupContainer.style.display = 'none'
-        $('#loadingScreen').style.display = 'block'
-        const gameScreen = new GameScreenComponent(this.gameData)
+        this.loading.show()
+        new GameScreenComponent(this.gameData, this.loading)
+    }
+
+    show() {
+        if (this.setupContainer) this.setupContainer.style.display = 'block'
+    }
+
+    hide() {
+        if (this.setupContainer) this.setupContainer.style.display = 'none'
     }
 }
