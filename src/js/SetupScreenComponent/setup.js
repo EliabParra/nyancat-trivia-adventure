@@ -1,24 +1,31 @@
+import GameScreenComponent from '../GameScreenComponent/game.js'
+
 const $ = $ => document.querySelector($)
 
 export default class SetupScreenComponent {
-    constructor() {
-        this.gameData = {}
+    constructor({ playerName, questionCount, difficulty, category } = {}) {
         this.setupContainer = $('#setupScreen')
+        this.setupContainer.style.display = 'block'
+        this.gameData = {
+            playerName: playerName || '',
+            questionCount: questionCount || 10,
+            difficulty: difficulty || 'medium',
+            category: category || '',
+        }
         this.renderScreen()
-        this.startButton = $('#startGameBtn')
-        this.categoriesSelect = $('#categories')
-        this.categories = this.getCategories()
-        this.renderOptions()
+        this.addEventListeners()
     }
 
     renderScreen() {
-        this.setupContainer.innerHTML += `
+        const { playerName, questionCount, difficulty } = this.gameData
+
+        this.setupContainer.innerHTML = `
             <h2>GAME SETUP</h2>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="playerName">PLAYER NAME:</label>
-                    <input type="text" id="playerName" placeholder="ENTER YOUR NAME..." maxlength="20" required>
+                    <input type="text" id="playerName" placeholder="ENTER YOUR NAME..." maxlength="20" value="${playerName}" required>
                 </div>
                 
                 <div class="form-group">
@@ -54,6 +61,10 @@ export default class SetupScreenComponent {
                 <button class="btn btn-success" id="startGameBtn">START GAME!</button>
             </div>
         `
+
+        this.renderOptions()
+        $('#questionCount').value = questionCount
+        $('#difficulty').value = difficulty
     }
     
     async getCategories() {
@@ -72,15 +83,17 @@ export default class SetupScreenComponent {
     }
     
     renderOptions() {
-        this.categories.then(categories => {
+        this.categoriesSelect = $('#categories')
+        this.getCategories().then(categories => {
             categories.forEach(category => {
                 const { id, name } = category
                 this.categoriesSelect.innerHTML += `<option value="${id}">${name}</option>`
             })
+            this.categoriesSelect.value = this.gameData.category
         })
     }
     
-    startGame() {
+    setGameData() {
         this.playerName = this.getPlayerName()
         this.questionCount = $('#questionCount').value
         this.difficulty = $('#difficulty').value
@@ -92,5 +105,18 @@ export default class SetupScreenComponent {
             difficulty: this.difficulty,
             category: this.category
         }
+    }
+
+    addEventListeners() {
+        this.startButton = $('#startGameBtn')
+        this.startButton.addEventListener('click', () => this.startGame())
+    }
+
+    startGame() {
+        this.setGameData()
+        if (!this.playerName) return
+        this.setupContainer.style.display = 'none'
+        $('#loadingScreen').style.display = 'block'
+        const gameScreen = new GameScreenComponent(this.gameData)
     }
 }

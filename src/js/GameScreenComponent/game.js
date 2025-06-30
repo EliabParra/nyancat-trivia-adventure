@@ -1,3 +1,4 @@
+import ResultsScreenComponent from "../ResultsScreenComponent/results.js"
 const $ = $ => document.querySelector($)
 
 export default class GameScreenComponent {
@@ -10,7 +11,9 @@ export default class GameScreenComponent {
         this.currentQuestionIndex = 0
         this.score = 0
         this.correctAnswers = 0
-        this.fetchQuestions()
+        this.avgTime = 0
+        this.timeSpent = []
+        this.fetchQuestion()
     }
 
     renderScreen() {
@@ -36,6 +39,9 @@ export default class GameScreenComponent {
                 
             </div>
         `
+
+        this.renderAnswers()
+        this.startTimer()
     }
 
     startTimer() {
@@ -44,6 +50,8 @@ export default class GameScreenComponent {
         let timeLeft = 20
         timerElement.textContent = timeLeft
         progressInfo.textContent = `Q: ${this.currentQuestionIndex + 1}/${this.questionCount}`
+
+        this.questionStart = Date.now()
 
         this.timerInterval = setInterval(() => {
             timeLeft--
@@ -56,20 +64,24 @@ export default class GameScreenComponent {
             if (timeLeft <= 0) {
                 clearInterval(this.timerInterval)
                 timerElement.textContent = '0'
+                this.timeSpent.push(20)
+                this.updateAvgTime()
                 this.currentQuestionIndex++
                 progressInfo.textContent = `Q: ${this.currentQuestionIndex + 1}/${this.questionCount}`
-                if (this.currentQuestionIndex <= this.questionCount) {
+                if (this.currentQuestionIndex < this.questionCount) {
                     timerElement.classList.remove('warning')
-                    this.fetchQuestions()
+                    this.fetchQuestion()
                 } else {
                     this.gameScreenContainer.style.display = 'none'
-                    this.resultsScreenContainer.style.display = 'block'
+                    $('#resultsScreen').style.display = 'block'
+                    console.log(this.getResults())
+                    const resultsScreen = new ResultsScreenComponent(this.getResults())
                 }
             }
         }, 1000)
     }
 
-    async fetchQuestions() {
+    async fetchQuestion() {
         try {
             const response = await fetch(`https://opentdb.com/api.php?amount=1&category=${this.category ? this.category : ''}&difficulty=${this.difficulty}&type=multiple`)
             const data = await response.json()
@@ -77,13 +89,10 @@ export default class GameScreenComponent {
             $('#gameScreen').style.display = 'block'
             this.questionData = data.results[0]
             this.renderScreen()
-            this.renderAnswers()
-            this.startTimer()
         } catch (error) {
             console.error('Error fetching questions:', error)
             $('#gameScreen').style.display = 'none'
             $('#loadingScreen').innerHTML = 'Failed to load questions. Please try again later.'
-            this.questionData = {}
         }
     }
 
@@ -99,6 +108,10 @@ export default class GameScreenComponent {
             answerButton.textContent = answer
             answerButton.classList.add('answer-btn')
             answerButton.addEventListener('click', () => {
+                const elapsed = Math.round((Date.now() - this.questionStart) / 1000)
+                this.timeSpent.push(elapsed)
+                this.updateAvgTime()
+
                 if (this.checkAnswer(answer)) {
                     answerButton.classList.add('correct')
                     $('#scoreInfo').textContent = `SCORE: ${this.score}`
@@ -114,15 +127,26 @@ export default class GameScreenComponent {
                 clearInterval(this.timerInterval)
                 setTimeout(() => {
                     if (this.currentQuestionIndex < this.questionCount) {
-                        this.fetchQuestions()
+                        this.fetchQuestion()
                     } else {
                         this.gameScreenContainer.style.display = 'none'
-                        
+                        $('#resultsScreen').style.display = 'block'
+                        console.log(this.getResults())
+                        const resultsScreen = new ResultsScreenComponent(this.getResults())
                     }
-                }, 2000)
+                }, 3000)
             })
             answersContainer.appendChild(answerButton)
         })
+    }
+
+    updateAvgTime() {
+        if (this.timeSpent.length > 0) {
+            const sum = this.timeSpent.reduce((a, b) => a + b, 0)
+            this.avgTime = sum / this.timeSpent.length
+        } else {
+            this.avgTime = 0
+        }
     }
 
     checkAnswer(answer) {
@@ -133,5 +157,17 @@ export default class GameScreenComponent {
             return true
         }
         return false
+    }
+
+    getResults() {
+        return {
+            playerName: this.playerName,
+            questionCount: this.questionCount,
+            difficulty: this.difficulty,
+            category: this.category,
+            correctAnswers: this.correctAnswers,
+            score: this.score,
+            avgTime: this.avgTime,
+        }
     }
 }
