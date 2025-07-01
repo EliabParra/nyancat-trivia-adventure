@@ -21,7 +21,7 @@ Disfruta de preguntas desafiantes, temporizadores animados, música retro y una 
 ## 🏗️ Estructura del Proyecto
 
 ```
-trivia-challenge/
+nyancat-trivia-adventure/
 │
 ├── index.html
 ├── src/
@@ -87,8 +87,8 @@ trivia-challenge/
 
 1. **Clona el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/trivia-challenge.git
-   cd trivia-challenge
+   git clone https://github.com/tu-usuario/nyancat-trivia-adventure.git
+   cd nyancat-trivia-adventure
    ```
 
 2. **Abre `index.html` en tu navegador**  
