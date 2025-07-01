@@ -1,242 +1,126 @@
-# 🧠 Trivia Challenge Game
+# 🌈 Nyan Cat Trivia Adventure! 🐱
 
-## 📋 Descripción del Proyecto
+¡Bienvenido a la trivia más colorida y pixelada del universo!  
+Disfruta de preguntas desafiantes, temporizadores animados, música retro y una interfaz inspirada en Nyan Cat.
 
-Aplicación web interactiva de trivia que demuestra el manejo de programación asíncrona utilizando HTML, CSS y JavaScript vanilla. El juego consume la API externa de Open Trivia Database para proporcionar una experiencia completa de preguntas y respuestas con temporizadores y sistema de puntuación.
+---
 
 ## ✨ Características Principales
 
-### 🎮 **Funcionalidades del Juego**
-- Configuración personalizada del juego (nombre, cantidad de preguntas, dificultad, categoría)
-- Consumo asíncrono de API externa para obtener preguntas
-- Temporizador de 20 segundos por pregunta con indicadores visuales
-- Sistema de puntuación en tiempo real
-- Feedback visual inmediato para respuestas
-- Pantalla de resultados con estadísticas completas
+- Configuración personalizada: nombre, cantidad de preguntas, dificultad y categoría.
+- Todas las preguntas se obtienen de la API Open Trivia Database en una sola petición.
+- Temporizador de 20 segundos por pregunta, con animaciones y advertencias visuales.
+- Feedback inmediato: respuestas correctas/incorrectas resaltadas y animadas.
+- Avance automático tras responder o agotar el tiempo.
+- Pantalla de resultados con estadísticas: puntaje, aciertos, porcentaje de éxito y tiempo promedio.
+- Música de fondo controlable y efectos visuales de estrellas pixeladas.
+- Interfaz responsiva y temática Nyan Cat (cursores, colores, animaciones).
 
-### 🎨 **Interfaz de Usuario**
-- Diseño responsivo para dispositivos móviles, tablets y desktop
-- Interfaz moderna con efectos glassmorphism y gradientes
-- Animaciones suaves y transiciones elegantes
-- Indicadores visuales claros para todas las interacciones
-- Paleta de colores profesional y accesible
-
-### ⚡ **Programación Asíncrona**
-- Peticiones HTTP asíncronas con `fetch()`
-- Manejo de temporizadores con `setTimeout()` y `setInterval()`
-- Gestión de estados de carga y errores
-- Control de flujo asíncrono del juego
+---
 
 ## 🏗️ Estructura del Proyecto
 
 ```
 trivia-challenge/
 │
-├── index.html          # Archivo principal con la aplicación completa
-├── main.js             # Archivo con la lógica del juego
-├── README.md           # Este archivo
-└── styles.css          # Estilos del proyecto
+├── index.html
+├── src/
+│   ├── styles.css
+│   ├── assets/
+│   │   ├── nyan_cat_cursor_normal.png
+│   │   ├── nyan_cat_cursor_pointer.png
+│   │   ├── nyan_cat_music.mp3
+│   │   └── nyan_cat.gif
+│   └── js/
+│       ├── main.js
+│       ├── AudioComponent/
+│       │   └── audio.js
+│       ├── GameScreenComponent/
+│       │   └── game.js
+│       ├── LoadingComponent/
+│       │   └── loading.js
+│       ├── PixelStarsComponent/
+│       │   └── stars.js
+│       ├── ResultsScreenComponent/
+│       │   └── results.js
+│       └── SetupScreenComponent/
+│           └── setup.js
+└── README.md
 ```
+
+---
+
+## 🚦 Secuencia y Lógica de la Aplicación
+
+1. **Pantalla de Configuración:**  
+   El usuario elige nombre, cantidad de preguntas, dificultad y categoría.
+
+2. **Pantalla de Carga:**  
+   Aparece un spinner animado mientras se obtienen todas las preguntas de la API.
+
+3. **Pantalla de Juego:**  
+   - Se muestran las preguntas una a una, con temporizador de 20 segundos.
+   - Si el usuario responde, se muestra feedback visual y tras 2 segundos avanza.
+   - Si el tiempo se agota, se muestra la respuesta correcta y tras 2 segundos avanza.
+   - Se registra el tiempo empleado en cada pregunta.
+
+4. **Pantalla de Resultados:**  
+   - Estadísticas completas: puntaje, aciertos, porcentaje de éxito y tiempo promedio.
+   - Opciones para jugar de nuevo, cambiar configuración o salir.
+
+5. **Extras visuales:**  
+   - Fondo animado de estrellas pixeladas.
+   - Cursores personalizados y música de fondo controlable.
+
+---
+
+## 🔧 API Utilizada
+
+- **Open Trivia Database**  
+  - URL: `https://opentdb.com/api.php`
+  - Parámetros: `amount`, `category`, `difficulty`, `type`
+  - Formato: JSON
+
+---
 
 ## 🚀 Instalación y Uso
 
-### Prerrequisitos
-- Navegador web moderno (Chrome, Firefox, Safari, Edge)
-- Conexión a internet para consumir la API
-
-### Instrucciones de Instalación
-1. **Clona o descarga el proyecto**
+1. **Clona el repositorio:**
    ```bash
    git clone https://github.com/tu-usuario/trivia-challenge.git
    cd trivia-challenge
    ```
 
-2. **Abre el archivo HTML**
-   - Doble clic en `index.html` para abrir en el navegador, o
-   - Usa un servidor local como live server (recomendado):
-
-## 🎯 Configuración del Juego
-
-### Parámetros Disponibles
-
-| Parámetro | Opciones | Validación |
-|-----------|----------|------------|
-| **Nombre del Jugador** | Texto libre | 2-20 caracteres, obligatorio |
-| **Cantidad de Preguntas** | Numérico | Mínimo 5, máximo 20 |
-| **Dificultad** | Fácil, Medio, Difícil | Selección única obligatoria |
-| **Categoría** | Mixtas + 7 específicas | Opcional (mixtas por defecto) |
-
-### Categorías Disponibles
-- **Mixtas**: Todas las categorías mezcladas
-- **Conocimiento General**: Cultura general
-- **Ciencia y Naturaleza**: Biología, física, química
-- **Deportes**: Deportes de todo el mundo
-- **Geografía**: Países, capitales, landmarks
-- **Historia**: Eventos históricos mundiales
-- **Películas**: Cine internacional
-- **Música**: Artistas, géneros, historia musical
-
-## 🏆 Sistema de Puntuación
-
-### Mecánica de Puntos
-- **Respuesta Correcta**: +10 puntos base
-- **Respuesta Incorrecta**: 0 puntos
-- **Tiempo Agotado**: 0 puntos
-
-### Estadísticas Finales
-- Puntuación total acumulada
-- Número de respuestas correctas vs incorrectas
-- Porcentaje de aciertos
-- Tiempo promedio empleado por pregunta
-- Representación visual circular del rendimiento
-
-## ⏱️ Sistema de Temporizador
-
-### Características del Timer
-- **Duración**: 20 segundos por pregunta
-- **Actualización**: Cada segundo (1000ms)
-- **Indicador Visual**: Cambio de color en los últimos 5 segundos
-- **Auto-avance**: Pregunta siguiente al agotarse el tiempo
-- **Pausa**: Se detiene al seleccionar respuesta
-
-### Estados Visuales
-- **Normal**: Verde (15-20 segundos)
-- **Advertencia**: Naranja pulsante (1-5 segundos)
-- **Agotado**: Avance automático a siguiente pregunta
-
-## 🔧 API y Servicios Externos
-
-### Open Trivia Database
-- **URL Base**: `https://opentdb.com/api.php`
-- **Parámetros**: amount, category, difficulty, type
-- **Formato**: JSON con preguntas y respuestas
-- **Manejo de Errores**: Validación de respuesta y fallbacks
-
-### Ejemplo de Petición
-```javascript
-const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
-```
-
-## 💻 Tecnologías Utilizadas
-
-### Frontend
-- **HTML5**: Estructura semántica y formularios
-- **CSS3**: 
-  - Flexbox y CSS Grid para layouts
-  - Animaciones CSS y transiciones
-  - Variables CSS para temas
-  - Media queries para responsividad
-- **JavaScript ES6+**:
-  - Clases y módulos
-  - Async/Await y Promises
-  - Fetch API
-  - DOM manipulation
-  - Event handling
-
-### Características Técnicas
-- **Sin dependencias externas**: Vanilla JavaScript puro
-- **Programación orientada a objetos**: Clase principal `TriviaGame`
-- **Gestión de estados**: Control centralizado del flujo del juego
-- **Manejo de errores**: Try-catch y validaciones
-
-## 🔄 Estados de la Aplicación
-
-### Flujo de Navegación
-```
-Configuración → Carga → Juego → Resultados
-     ↑              ↓         ↑
-     └── Cambiar Config ←─────┘
-     └── Jugar de Nuevo ←─────┘
-```
-
-### Manejo de Errores
-- **Error de API**: Mensaje informativo y opción de reintentar
-- **Sin conexión**: Notificación y sugerencias
-- **Datos inválidos**: Validación en tiempo real
-- **Timeouts**: Manejo automático y fallbacks
-
-## 🧪 Testing y Debugging
-
-### Herramientas de Desarrollo
-- **Console.log**: Tracking de estados del juego
-- **DevTools**: Inspección de red y performance
-- **Responsive Design**: Testing en diferentes viewports
-
-### Variables Globales para Debug
-```javascript
-// Acceso a la instancia del juego
-window.triviaGame
-
-// Estados disponibles
-triviaGame.gameState
-triviaGame.gameConfig
-```
-
-## 📚 Estructura del Código
-
-### Organización de Archivos
-- **HTML**: Estructura de las 4 pantallas principales
-- **CSS**: Estilos organizados por componentes
-- **JavaScript**: Clase principal con métodos específicos
-
-### Métodos Principales
-```javascript
-class TriviaGame {
-    // Configuración
-    initializeEventListeners()
-    showScreen(screenId)
-    
-    // Flujo del juego
-    startGame()
-    loadQuestions()
-    startQuestion()
-    
-    // Temporizador
-    startTimer()
-    updateTimer()
-    
-    // Interacciones
-    selectAnswer(button)
-    nextQuestion()
-    
-    // Resultados
-    showResults()
-    calculateStats()
-    
-    // Navegación
-    playAgain()
-    changeConfiguration()
-    exitGame()
-}
-```
-
-## 🎓 Objetivos Académicos Cumplidos
-
-### Programación Asíncrona
-- ✅ Uso de `fetch()` para consumo de API
-- ✅ Implementación de `setTimeout()` y `setInterval()`
-- ✅ Manejo de Promises y async/await
-- ✅ Control de flujos asíncronos
-
-### Manipulación del DOM
-- ✅ Event listeners y delegation
-- ✅ Modificación dinámica de contenido
-- ✅ Gestión de clases CSS programáticamente
-- ✅ Formularios y validación
-
-### Buenas Prácticas
-- ✅ Código modular y reutilizable
-- ✅ Separación de responsabilidades
-- ✅ Manejo de errores robusto
-- ✅ Interfaz responsive y accesible
-
-
-## 👨‍💻 Autor
-
-**[Eliab Parra]**  
-Estudiante de Ingeniería de Computación  
-Universidad Rafael Urdaneta  
+2. **Abre `index.html` en tu navegador**  
+   (o usa un servidor local para mejor compatibilidad con módulos ES).
 
 ---
 
-**¡Disfruta jugando Trivia Challenge! 🎉**
+## 🏆 Sistema de Puntuación y Estadísticas
+
+- **Respuesta correcta:** +10 puntos
+- **Respuesta incorrecta o tiempo agotado:** 0 puntos
+- **Estadísticas finales:**  
+  - Puntaje total
+  - Respuestas correctas / totales
+  - Porcentaje de aciertos
+  - Tiempo promedio por pregunta
+
+---
+
+## ⏱️ Temporizador
+
+- **20 segundos por pregunta**
+- **Indicador visual:** Cambia de color en los últimos 5 segundos
+- **Avance automático:** Al responder o agotar el tiempo
+
+---
+
+## 👾 Créditos y Autor
+
+Desarrollado por **Eliab Parra**  
+Universidad Rafael Urdaneta
+
+---
+
+¡Disfruta la aventura de trivia más colorida y pixelada con Nyan Cat! 🎉
