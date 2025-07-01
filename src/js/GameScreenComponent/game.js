@@ -1,4 +1,5 @@
 import ResultsScreenComponent from "../ResultsScreenComponent/results.js"
+
 const $ = $ => document.querySelector($)
 
 export default class GameScreenComponent {
@@ -14,7 +15,24 @@ export default class GameScreenComponent {
         this.avgTime = 0
         this.timeSpent = []
         this.loading = loading
-        this.fetchQuestion()
+        this.questionsData = []
+        this.fetchQuestions()
+    }
+
+    async fetchQuestions() {
+        try {
+            const response = await fetch(`https://opentdb.com/api.php?amount=${this.questionCount}&category=${this.category ? this.category : ''}&difficulty=${this.difficulty}&type=multiple`)
+            const data = await response.json()
+            this.loading.hide()
+            this.questionsData = data.results
+            this.show()
+            this.renderScreen()
+            this.showQuestion()
+        } catch (error) {
+            console.error('Error fetching questions:', error)
+            this.hide()
+            this.loading.shadowRoot.innerHTML = 'Failed to load questions. Please try again later.'
+        }
     }
 
     renderScreen() {
@@ -74,7 +92,7 @@ export default class GameScreenComponent {
 
                 .timer.warning {
                     color: #ff0000;
-                    animation: pixelAlarm 0.5s infinite;
+                    animation: pixelAlarm 0.5s infinite, pixelPulse 1s infinite;
                 }
 
                 @keyframes pixelPulse {
@@ -182,27 +200,50 @@ export default class GameScreenComponent {
             </div>
 
             <div class="question-container">
-                <div class="question-text" id="questionText">
-                    ${this.questionData.question}
-                </div>
+                <div class="question-text" id="questionText"></div>
             </div>
 
             <div class="answers-container" id="answersContainer"></div>
         `
+    }
 
-        this.renderAnswers()
+    showQuestion() {
+        if (this.currentQuestionIndex >= this.questionsData.length) {
+            this.hide()
+            new ResultsScreenComponent(this.getResults(), this.loading).show()
+            return
+        }
+
+        const questionData = this.questionsData[this.currentQuestionIndex]
+        $('#progressInfo').textContent = `Q: ${this.currentQuestionIndex + 1}/${this.questionCount}`
+        $('#scoreInfo').textContent = `SCORE: ${this.score}`
+        $('#correctAnswersInfo').textContent = `CORRECT ANSWERS: ${this.correctAnswers}`
+        $('#questionText').innerHTML = questionData.question
+
+        const answers = [...questionData.incorrect_answers, questionData.correct_answer]
+        answers.sort(() => Math.random() - 0.5)
+
+        const answersContainer = $('#answersContainer')
+        answersContainer.innerHTML = ''
+        answers.forEach(answer => {
+            const answerButton = document.createElement('button')
+            answerButton.classList.add('answer-button', 'answer-btn')
+            answerButton.textContent = answer
+            answerButton.addEventListener('click', () => this.handleAnswer(answerButton, answer, questionData))
+            answersContainer.appendChild(answerButton)
+        })
+
         this.startTimer()
     }
 
     startTimer() {
         const timerElement = $('#timer')
-        const progressInfo = $('#progressInfo')
         let timeLeft = 20
         timerElement.textContent = timeLeft
-        progressInfo.textContent = `Q: ${this.currentQuestionIndex + 1}/${this.questionCount}`
-
+        timerElement.classList.remove('warning')
         this.questionStart = Date.now()
 
+        clearInterval(this.timerInterval)
         this.timerInterval = setInterval(() => {
             timeLeft--
             timerElement.textContent = timeLeft
@@ -216,76 +257,54 @@ export default class GameScreenComponent {
                 timerElement.textContent = '0'
                 this.timeSpent.push(20)
                 this.updateAvgTime()
-                this.currentQuestionIndex++
-                progressInfo.textContent = `Q: ${this.currentQuestionIndex + 1}/${this.questionCount}`
-                if (this.currentQuestionIndex < this.questionCount) {
-                    timerElement.classList.remove('warning')
-                    this.fetchQuestion()
-                } else {
-                    this.hide()
-                    new ResultsScreenComponent(this.getResults(), this.loading).show()
-                }
+                this.showCorrectAnswer(this.questionsData[this.currentQuestionIndex])
+                setTimeout(() => {
+                    this.currentQuestionIndex++
+                    this.showQuestion()
+                }, 2000)
             }
         }, 1000)
     }
 
-    async fetchQuestion() {
-        try {
-            const response = await fetch(`https://opentdb.com/api.php?amount=1&category=${this.category ? this.category : ''}&difficulty=${this.difficulty}&type=multiple`)
-            const data = await response.json()
-            this.loading.hide()
-            this.show()
-            this.questionData = data.results[0]
-            this.renderScreen()
-        } catch (error) {
-            console.error('Error fetching questions:', error)
-            this.hide()
-            this.loading.shadowRoot.innerHTML = 'Failed to load questions. Please try again later.'
+    handleAnswer(answerButton, answer, questionData) {
+        if (answerButton.disabled) return
+
+        clearInterval(this.timerInterval)
+        const elapsed = Math.round((Date.now() - this.questionStart) / 1000)
+        this.timeSpent.push(elapsed)
+        this.updateAvgTime()
+
+        const answersContainer = $('#answersContainer')
+        const allButtons = answersContainer.querySelectorAll('.answer-button')
+
+        if (answer === questionData.correct_answer) {
+            answerButton.classList.add('correct')
+            this.correctAnswers++
+            this.score += 10
+            $('#scoreInfo').textContent = `SCORE: ${this.score}`
+            $('#correctAnswersInfo').textContent = `CORRECT ANSWERS: ${this.correctAnswers}`
+        } else {
+            answerButton.classList.add('incorrect')
+            this.showCorrectAnswer(questionData)
         }
+
+        // Deshabilita todos los botones
+        allButtons.forEach(btn => btn.disabled = true)
+
+        setTimeout(() => {
+            this.currentQuestionIndex++
+            this.showQuestion()
+        }, 2000)
     }
 
-    renderAnswers() {
+    showCorrectAnswer(questionData) {
         const answersContainer = $('#answersContainer')
-        const answers = [...this.questionData.incorrect_answers, this.questionData.correct_answer]
-        answers.sort(() => Math.random() - 0.5)
-
-        const scoreInfo = $('#scoreInfo')
-        const correctAnswersInfo = $('#correctAnswersInfo')
-
-        answersContainer.innerHTML = ''
-        answers.forEach(answer => {
-            const answerButton = document.createElement('button')
-            answerButton.classList.add('answer-button')
-            answerButton.textContent = answer
-            answerButton.classList.add('answer-btn')
-            answerButton.addEventListener('click', () => {
-                const elapsed = Math.round((Date.now() - this.questionStart) / 1000)
-                this.timeSpent.push(elapsed)
-                this.updateAvgTime()
-
-                if (this.checkAnswer(answer)) {
-                    answerButton.classList.add('correct')
-                    scoreInfo.textContent = `SCORE: ${this.score}`
-                    correctAnswersInfo.textContent = `CORRECT ANSWERS: ${this.correctAnswers}`
-                } else {
-                    answerButton.classList.add('incorrect')
-                    const correctAnswerButton = Array.from(answersContainer.children).find(btn => btn.textContent === this.questionData.correct_answer)
-                    correctAnswerButton.classList.add('correct')
-                }
-                const allButtons = answersContainer.querySelectorAll('.answer-button')
-                allButtons.forEach(btn => btn.disabled = true)
-                this.currentQuestionIndex++
-                clearInterval(this.timerInterval)
-                setTimeout(() => {
-                    if (this.currentQuestionIndex < this.questionCount) {
-                        this.fetchQuestion()
-                    } else {
-                        this.hide()
-                        new ResultsScreenComponent(this.getResults(), this.loading).show()
-                    }
-                }, 3000)
-            })
-            answersContainer.appendChild(answerButton)
+        const allButtons = answersContainer.querySelectorAll('.answer-button')
+        allButtons.forEach(btn => {
+            btn.disabled = true
+            if (btn.textContent === questionData.correct_answer) {
+                btn.classList.add('correct')
+            }
         })
     }
 
@@ -296,16 +315,6 @@ export default class GameScreenComponent {
         } else {
             this.avgTime = 0
         }
-    }
-
-    checkAnswer(answer) {
-        const correctAnswer = this.questionData.correct_answer
-        if (answer === correctAnswer) {
-            this.correctAnswers++
-            this.score += 10
-            return true
-        }
-        return false
     }
 
     getResults() {
