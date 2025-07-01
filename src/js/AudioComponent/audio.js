@@ -177,20 +177,18 @@ export default class AudioComponent extends HTMLElement {
             }
         })
 
-        // Iniciar audio tras cualquier interacción
         let started = false
         const startAudio = () => {
-            if (!started) {
+            if (!started || this.audio.paused) {
                 this.audio.volume = this.volumeSlider.value / 100
-                this.audio.play().catch(() => {})
-                started = true
+                this.audio.play().then(() => started = true).catch(() => {})
             }
         }
         const events = ['click', 'keydown', 'touchstart', 'touchend', 'pointerdown']
         events.forEach(ev => {
-            window.addEventListener(ev, startAudio, { once: true, passive: true })
+            window.addEventListener(ev, startAudio, { passive: true })
             if (this.shadowRoot) {
-                this.shadowRoot.addEventListener(ev, startAudio, { once: true, passive: true })
+                this.shadowRoot.addEventListener(ev, startAudio, { passive: true })
             }
         })
         this.muteBtn.addEventListener('click', startAudio)
